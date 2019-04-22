@@ -1,0 +1,89 @@
+{% extends 'sites/base.html' %}
+{% block title %}
+    {{ store | first }}
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div style="padding: 30px 1px 30px 1px; background: #c7f9b3">
+            <form class="form-inline d-flex justify-content-center"
+                  style="padding: 0px 20px 0px 20px;" method="POST" action="">
+                {% csrf_token %}
+                <div class="input-group-addon has-search branch_search_name">
+                    <span class="fa fa-search form-control-feedback"></span>
+                    <input type="search" class="form-control" name="search_name" id="search_name"
+                           placeholder="Nhập tên vật tư cần tìm" style="width: 98%">
+                </div>
+                <button class="btn btn-success btn-search branch_btn_search" type="submit">Search</button>
+            </form>
+        </div>
+        <div class="section">
+            <h4><span class="fas fa-list-ul text-success"></span> Dánh sách vật tư
+                <span class="text-danger">{{ store | first }}</span></h4>
+            <div class="table-responsive-md">
+                <table class="table table-hover table-bordered">
+                    <thead style="background-color: #99cc99">
+                    <tr>
+                        <th>Mã vật tư</th>
+                        <th>Tên vật tư</th>
+                        <th>Số lương</th>
+                        <th>Đơn vị tính</th>
+                        <th>Nơi sản xuất</th>
+                        <th>Tình trạng</th>
+                        <th>Giá</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in store %}
+                        <tr>
+                            <td>{{ item.good.good_id }}</td>
+                            <td>{{ item.good.good_name }}</td>
+                            <td>{{ item.amount }}</td>
+                            <td>{{ item.good.good_unit }}</td>
+                            <td>{{ item.good.good_manufacturing }}</td>
+                            <td>{{ item.good.good_status }}</td>
+                            <td>{{ item.good.good_price }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tr style="background: #c7f9b3; font-weight: 700; color: blue"><td colspan="7">Tổng số lượng: {{ sum }}</td></tr>
+                </table>
+            </div>
+            {% if store.has_other_pages %}
+                <div class="tab_page">
+                    <ul class="pagination justify-content-center" id="pages">
+                        {% if store.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ store.previous_page_number }}">Previous</a>
+                            </li>
+
+                        {% endif %}
+                        <li class="page-item active disabled">
+                            <a class="page-link">{{ store.number }}</a></li>
+                        {% if store.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ store.next_page_number }}">Next</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ store.paginator.num_pages }}">Last</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+{% block javascript %}
+    <script>
+        var id = parseInt('{{ branch_id }}');
+        $(document).ready(function () {
+
+            if (id == 1) {
+                $("#menu_1").addClass("active");
+            } else {
+                $("#menu_2").addClass("active");
+            }
+            localStorage.clear()
+        });
+    </script>
+{% endblock %}

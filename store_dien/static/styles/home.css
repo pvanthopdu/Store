@@ -1,0 +1,135 @@
+.header {
+    margin-bottom: 0;
+    padding: 20px 0px 20px 0px;
+    background: url("/static/images/background.jpg") no-repeat fixed;
+    background-size: 100% auto;
+}
+.text-header{
+    font-style: italic;
+    color: white;
+}
+.section {
+    padding: 30px 20px 20px 20px;
+    border-radius: 5px;
+    border: 1px solid lightgrey;
+}
+
+form {
+    padding: 10px 0px 20px 0px;
+
+}
+
+.btn-search {
+    font-weight: 700;
+}
+
+.btn-search:hover {
+    background-color: #FF6347;
+}
+
+select > option {
+    color: #005cbf;
+    font-weight: 500;
+}
+
+.has-search .form-control {
+    padding-left: 2.375rem;
+}
+
+.has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.375rem;
+    text-align: center;
+    pointer-events: none;
+    color: #28a745;
+    font-size: large;
+}
+
+.tab_page {
+    padding-top: 10px;
+}
+
+.page_number:hover {
+    cursor: pointer;
+}
+
+.page-item.active .page-link {
+    z-index: 1;
+    color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.menu_tabs {
+    border: 1px solid white;
+    border-radius: 5px;
+    font-weight: 700;
+}
+
+.menu_tabs:hover {
+    display: block;
+    border: 1px solid white;
+    background: #d9f9cd;
+}
+
+a.menu_link {
+    color: white;
+    padding: 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+a.menu_link:hover {
+    color: #28a745;
+}
+
+a.menu_link:focus {
+    color: #28a745;
+}
+
+.active {
+    color: #28a745;
+    background: #d9f9cd;
+}
+
+.active > a {
+    color: #28a745;
+    background: #d9f9cd;
+}
+
+.dropdown-item:hover {
+    color: #28a745;
+    background: #d9f9cd;
+}
+
+.branch_search_name {
+    width: 80%;
+}
+
+.branch_btn_search {
+    width: 20%;
+}
+
+.sumamount {
+    background: #d9f9cd;
+}
+
+/* Tooltip */
+.tooltip-inner {
+    background: #28a745;
+    color: white;
+    font-weight: 700;
+}
+
+.bs-tooltip-auto[x-placement^=bottom] .arrow::before,
+.bs-tooltip-bottom .arrow::before {
+    border-bottom-color: #28a745;
+}
+
+
+

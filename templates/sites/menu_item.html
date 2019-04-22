@@ -1,0 +1,3 @@
+{% for item in branch %}
+    <a class="dropdown-item" href="{% url 'store_dien:stores' item.pk %}">{{ item.branch_name }}</a>
+{% endfor %}

@@ -1,0 +1,5 @@
+<select class="col-sm-2 form-control" name="branch" id="branch" required>
+    {% for branch in branchs %}
+        <option value="{{ branch.pk }}">{{ branch.branch_name }}</option>
+    {% endfor %}
+</select>

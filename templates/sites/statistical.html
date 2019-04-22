@@ -1,0 +1,149 @@
+{% extends 'sites/base.html' %}
+{% load store_tags %}
+{% load humanize %}
+{% block title %}
+    Thống kê
+{% endblock %}
+{% block content %}
+    <div class="container" style="padding-bottom: 3%">
+        <div style="padding: 30px 15px 30px 15px; background: #c7f9b3">
+            <form style="padding: 0px 20px 0px 20px;" method="POST" action="">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="date_from"><b>Từ ngày</b></label>
+                    <input class="form-control" type="date" name="date_from" id="date_from" required>
+
+                </div>
+                <div class="form-group">
+                    <label for="date_to"><b>Đến ngày</b></label>
+                    <input class="form-control" type="date" name="date_to" id="date_to" required>
+
+                </div>
+                <div class="form-group">
+                    <label for="date_to"><b>Chọn kho lưu trữ </b></label>
+                    {% select_branch %}
+                </div>
+                <button class="form-control btn btn-success btn-search" type="submit">Thống kê</button>
+            </form>
+        </div>
+        {% if deals %}
+            <div class="section">
+                <h4><span class="fas fa-list-ul text-success"></span> Danh sách giao dịch</h4>
+                <div class="table-responsive-md">
+                    <table class="table table-hover table-bordered">
+                        <thead style="background-color: #99cc99">
+                        <tr>
+                            <th>Thời gian</th>
+                            <th>Loại GD</th>
+                            <th>Mã vật tư</th>
+                            <th>Tên vật tư</th>
+                            <th>Đơn vị</th>
+                            <th>Nơi sản xuất</th>
+                            <th>Tình trạng</th>
+                            <th>Số lượng</th>
+                            <th>Đơn giá</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for deal in deals %}
+                            <tr>
+                                <td>{{ deal.time_deal|date:"d/m/Y.P" }}</td>
+                                <td>
+                                    {% if deal.tyles == 0 %}
+                                        Nhập kho
+                                    {% elif deal.tyles == 1 %}
+                                        Xuất cấp
+                                    {% elif deal.tyles == 2 %}
+                                        Bán
+                                    {% else %}
+                                        Chuyển trả
+                                    {% endif %}
+                                </td>
+                                <td>{{ deal.good.good_id }}</td>
+                                <td>{{ deal.good.good_name }}</td>
+                                <td>{{ deal.good.good_unit }}</td>
+                                <td>{{ deal.good.good_manufacturing }}</td>
+                                <td>{{ deal.good.good_status }}</td>
+                                <td>{{ deal.amount }}</td>
+                                <td>{{ deal.good.good_price }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <h6 class="text-success"><span class="fas fa-arrow-right text-success"></span> Tồn đầu
+                    kỳ: {{ exist_start }}</h6>
+                {% if branch == 1 %}
+                    <h6 class="text-danger"><span class="fas fa-arrow-right text-danger"></span> Nhập
+                        kho: {{ value_in_pri }}</h6>
+                    <h6 class="text-danger"><span class="fas fa-arrow-right text-danger"></span> Xuất
+                        cấp: {{ value_out }}</h6>
+                    <h6 class="text-danger"><span class="fas fa-arrow-right text-danger"></span>
+                        Bán: {{ value_sale }}</h6>
+                    <h6 class="text-danger"><span class="fas fa-arrow-right text-danger"></span>
+                        Được chuyển trả: {{ value_return }}</h6>
+                {% else %}
+                    <h6 class="text-danger"><span class="fas fa-arrow-right text-danger"></span> Được xuất
+                        cấp: {{ value_out }}</h6>
+                    <h6 class="text-danger"><span class="fas fa-arrow-right text-danger"></span>
+                        Được bán: {{ value_sale }}</h6>
+                    <h6 class="text-danger"><span class="fas fa-arrow-right text-danger"></span>
+                        Chuyển trả: {{ value_return }}</h6>
+                {% endif %}
+                <h6 class="text-success"><span class="fas fa-store-alt text-success"></span>
+                        Tồn cuối kỳ: {{ exist_end }}</h6>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+{% block message %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="container">
+                <div class="alert
+                    {% if message.tags == 'error' %}
+                        alert-danger
+                    {% else %}
+                        alert-success
+                    {% endif %}
+                alert-dismissible text-center" style="margin-bottom: 0">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <span class="glyphicon glyphicon-ok" style="color: green;"></span>
+                    <strong style="color: red">{{ message|striptags }}</strong>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        //var date_from;
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            $("#menu_3").addClass("active");
+            $("#date_to").val(localStorage.getItem('date_to'));
+            $("#date_from").val(localStorage.getItem('date_from'));
+
+            if (localStorage.getItem('branch') != null) {
+                $("#branch").val(localStorage.getItem('branch'));
+            }
+
+        });
+
+        $("#date_from").change(function () {
+            date_from = $(this).val();
+            localStorage.setItem('date_from', date_from);
+        });
+        $("#date_to").change(function () {
+            date_to = $(this).val();
+            localStorage.setItem('date_to', date_to);
+        });
+
+        $("#branch").change(function () {
+            branch = $(this).val();
+            localStorage.setItem('branch', branch);
+        });
+
+    </script>
+{% endblock %}

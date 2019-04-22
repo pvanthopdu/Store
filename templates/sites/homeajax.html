@@ -1,0 +1,200 @@
+{% extends 'sites/base.html' %}
+{% block title %}
+    Trang chủ
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div style="padding: 30px 15px 30px 15px; background: #c7f9b3">
+            <form class="row" style="padding: 0px 20px 0px 20px;">
+
+                <div class="input-group-addon has-search col-sm-6" style="padding: 0">
+                    <span class="fa fa-search form-control-feedback"></span>
+                    <input type="search" class="form-control" name="search_name" id="search_name"
+                           placeholder="Nhập tên vật tư cần tìm">
+                </div>
+
+                <select class="col-sm-3 form-control" name="style" id="style">
+                    <option selected disabled>Chọn loại giao dịch</option>
+                    <option value="0">Nhập kho</option>
+                    <option value="1">Xuất cấp</option>
+                    <option value="2">Bán</option>
+                    <option value="3">Tất cả</option>
+                </select>
+                <select class="col-sm-3 form-control" name="status" id="status">
+                    <option selected disabled>Chọn trạng thái giao dịch</option>
+                    <option value="0">Chưa kích hoạt</option>
+                    <option value="1">Kích hoạt</option>
+                    <option value="2">Tất cả</option>
+                </select>
+            </form>
+        </div>
+        <div class="section">
+            <h4><span class="fas fa-list-ul text-success"></span> Lịch sử giao dịch</h4>
+            <div class="table-responsive-sm">
+                <table class="table table-hover table-bordered" id="table_deal">
+                    <thead style="background-color: #99cc99">
+                    <tr>
+                        <th>Thời gian</th>
+                        <th>Mã vật tư</th>
+                        <th>Tên vật tư</th>
+                        <th>Số lương</th>
+                        <th>Loại giao dịch</th>
+                        <th>Trạng thái</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="tab_page">
+                <ul class="pagination justify-content-center" id="pages">
+                    <li class='page-item'>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block message %}
+    <div class="container" id="messages">
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        $("#search_name").on('input', function () {
+            search_name = $("#search_name").val();
+            style = $("#style").val();
+            status = $("#status").val();
+            search(search_name, style, status, 1);
+        });
+
+        $("#style").change(function () {
+            search_name = $("#search_name").val();
+            style = $("#style").val();
+            status = $("#status").val();
+            search(search_name, style, status, 1);
+        });
+
+        $("#status").change(function () {
+            search_name = $("#search_name").val();
+            style = $("#style").val();
+            status = $("#status").val();
+            search(search_name, style, status, 1);
+        });
+
+        $(document).ready(function () {
+
+            search_name = $("#search_name").val();
+            style = $("#style").val();
+            status = $("#status").val();
+            search(search_name, style, status, 1);
+            window.setTimeout(function () {
+                $(".alert").fadeTo(1000, 0).slideUp(1000, function () {
+                    $(this).remove();
+                });
+            }, 5000);
+
+        });
+        //function jquey interact with backend
+        function active(element) {
+            deal_id = $(element).data("id");
+            //console.log(deal_id);
+            $.ajax({
+                headers: {"X-CSRFToken": '{{csrf_token}}'},
+                url: '/activeajax/' + deal_id,
+                data: {
+                    'deal_id': deal_id
+                },
+                type: 'post',
+                dataType: 'json',
+                success: function (data) {
+                    alert = data.active? "alert-success": "alert-danger";
+                    message_tag = "<div class='alert "+alert+" alert-dismissible text-center' style='margin-bottom: 0'>"+
+                                    "<button type='button' class='close' data-dismiss='alert'>&times;</button>"+
+                                    "<span class='glyphicon glyphicon-ok' style='color: green;'></span>"+
+                                    "<strong style='color: red'>"+data.messages+"</strong>"+
+                                    "</div>";
+                    $("#messages").append(message_tag);
+                    if (data.active) {
+                        $("#col" + deal_id).text(data.active);
+                    }
+                }
+            });
+        }
+        function search(search_name, style, status, page) {
+            $.ajax({
+                url: '/loadhomeajax',
+                data: {
+                    'search': search_name,
+                    'style': style,
+                    'status': status,
+                    'page': page
+                },
+                type: 'get',
+                dataType: 'json',
+                success: function (data) {
+                    deals = data.deals;
+                    pages = data.pages;
+                    page = parseInt(data.page);
+                    $('#table_deal>tbody').empty()
+                    var rows = '';
+                    $.each(deals, function (index, value) {
+
+                        disabled = "";
+                        if (value[6]) {
+                            disabled = "disabled";
+                        }
+                        rows += "<tr id='row" + value[0] + "'>" +
+                            "<td>" + value[1] + "</td>" +
+                            "<td>" + value[2] + "</td>" +
+                            "<td>" + value[3] + "</td>" +
+                            "<td>" + value[4] + "</td>" +
+                            "<td>" + value[5] + "</td>" +
+                            "<td id='col" + value[0] + "'>" + value[6] + "</td>" +
+                            "<td><button class='btn btn-success btnedit' data-id=" + value[0] + ">Edit</button> " +
+                            "<button class='btn btn-danger btnactive'" + disabled + " data-id=" + value[0] + ">Active</button></td>" +
+                            "</tr>";
+                    });
+                    $('#table_deal>tbody').append(rows)
+                    $('.btnedit').each(function (index, element) {
+                        $(element).click(function () {
+                            deal_id = $(this).data("id");
+                            window.location.href='/edit/'+parseInt(deal_id);
+                        })
+                    });
+
+                    $('.btnactive').each(function (index, element) {
+                        $(element).click(function () {
+                            active($(this));
+                        })
+                    });
+
+                    if (pages > 0) {
+                        page_i = "";
+                        if (page > 1) {
+                            page_i += "<li class='page-item'><a class='page-link page_number' data-id='" + (page - 1) + "'>Previous</a></li>";
+                            page_i += "<li class='page-item active disabled'><a class='page-link page_number' data-id='" + page + "'>" + page + "</a></li>";
+                        }
+
+                        if (pages > page) {
+                            page_i += "<li class='page-item'><a class='page-link page_number' data-id='" + (page + 1) + "'>Next</a></li>";
+                        }
+                        $("#pages").empty();
+                        $("#pages").append(page_i)
+                    }
+
+                    $('.page-link').click(function () {
+                        page = $(this).data("id");
+                        search_name = $("#search_name").val();
+                        style = $("#style").val();
+                        status = $("#status").val();
+                        search(search_name, style, status, page);
+
+                    });
+                }
+
+            });
+        }
+    </script>
+{% endblock %}

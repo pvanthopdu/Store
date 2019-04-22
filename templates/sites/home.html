@@ -1,0 +1,150 @@
+{% extends 'sites/base.html' %}
+{% block title %}
+    Trang chủ
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div style="padding: 30px 15px 30px 15px; background: #c7f9b3" class="d-none d-sm-block">
+            <form class="row" style="padding: 0px 20px 0px 20px;" method="POST" action="">
+                {% csrf_token %}
+                <div class="input-group-addon has-search col-sm-4" style="padding: 0">
+                    <span class="fa fa-search form-control-feedback"></span>
+                    <input type="search" class="form-control" name="search_name" id="search_name"
+                           placeholder="Nhập tên vật tư cần tìm">
+                </div>
+
+                <select class="col-sm-3 form-control" name="style" id="style">
+                    <option selected disabled>Chọn loại giao dịch</option>
+                    <option value="0">Nhập kho</option>
+                    <option value="1">Xuất cấp</option>
+                    <option value="2">Bán</option>
+                    <option value="3">Chuyển trả</option>
+                    <option value="4">Tất cả</option>
+                </select>
+                <select class="col-sm-3 form-control" name="status" id="status">
+                    <option selected disabled>Chọn trạng thái giao dịch</option>
+                    <option value="0">Chưa kích hoạt</option>
+                    <option value="1">Kích hoạt</option>
+                    <option value="2">Tất cả</option>
+                </select>
+                <button class="btn btn-success col-sm-2 btn-search" type="submit">Search</button>
+            </form>
+        </div>
+        <div class="section">
+            <h4><span class="fas fa-list-ul text-success"></span> Lịch sử giao dịch</h4>
+            {% if user.is_authenticated %}
+                <a href="{% url 'store_dien:add_deal' %}" class="btn btn-success text-light">Add deal</a>
+            {% endif %}
+            <div class="table-responsive-md" style="padding-top: 10px">
+                <table class="table table-hover table-bordered">
+                    <thead style="background-color: #99cc99">
+                    <tr>
+                        <th>User</th>
+                        <th>Thời gian</th>
+                        <th>Mã vật tư</th>
+                        <th>Tên vật tư</th>
+                        <th>Số lương</th>
+                        <th>Loại giao dịch</th>
+                        <th>Trạng thái</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for deal in deals %}
+                        <tr>
+                            <td>{{ deal.user_created.username }}</td>
+                            <td>{{ deal.time_deal|date:"d/m/Y.P" }}</td>
+                            <td>{{ deal.good.good_id }}</td>
+                            <td>{{ deal.good.good_name }}</td>
+                            <td>{{ deal.amount }}</td>
+                            <td>
+                                {% if deal.tyles == 0 %}
+                                    Nhập kho
+                                {% elif deal.tyles == 1 %}
+                                    Xuất cấp
+                                {% elif deal.tyles == 2 %}
+                                    Bán
+                                {% else %}
+                                    Chuyển trả
+                                {% endif %}
+                            </td>
+                            <td>{{ deal.status }}</td>
+                            <td>
+                                <a href="{% url 'store_dien:edit_deal' deal.id %}"
+                                   class="btn btn-success
+                                         {% if deal.status == True %}
+                                            disabled
+                                         {% endif %}">Edit</a>
+                                <a href="{% url 'store_dien:active_deal' deal.id %}"
+                                   class="btn btn-danger
+                                        {% if deal.status == True %}
+                                            disabled
+                                        {% endif %}">Active</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+            {% if deals.has_other_pages %}
+                <div class="tab_page">
+                    <ul class="pagination justify-content-center" id="pages">
+                        {% if deals.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ deals.previous_page_number }}">Previous</a>
+                            </li>
+
+                        {% endif %}
+                        <li class="page-item active disabled">
+                            <a class="page-link">{{ deals.number }}</a></li>
+                        {% if deals.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ deals.next_page_number }}">Next</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ deals.paginator.num_pages }}">Last</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+{% endblock %}
+{% block message %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="container">
+                <div class="alert
+                    {% if message.tags == 'error' %}
+                        alert-danger
+                    {% else %}
+                        alert-success
+                    {% endif %}
+                alert-dismissible text-center" style="margin-bottom: 0">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <span class="glyphicon glyphicon-ok" style="color: green;"></span>
+                    <strong style="color: red">{{ message|striptags }}</strong>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        $(document).ready(function () {
+
+            localStorage.clear()
+            window.setTimeout(function () {
+                $(".alert").fadeTo(1000, 0).slideUp(1000, function () {
+                    $(this).remove();
+                });
+            }, 5000);
+
+        });
+    </script>
+{% endblock %}

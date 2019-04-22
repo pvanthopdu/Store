@@ -1,0 +1,144 @@
+{% extends 'sites/base.html' %}
+{% block title %}
+    Thêm giao dịch
+{% endblock %}
+{% block content %}
+    <div class="container" style="padding-top: 10px; padding-bottom: 30px;">
+        <div class="section">
+            <h4 class="text-center"><span class="fas fa-list-ul text-success"></span> {{ header }}</h4>
+            <form method="POST">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="{{ message.tags }} alert alert-danger" role="alert">
+                            {{ message|striptags }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="font-weight-bold"
+                           for="{{ deal.tyles.id_for_label }}"> {{ deal.tyles.label }}</label>
+                    <div class="input-group">
+                            <span class="input-group-addon btn border-success" style="min-width: 50px">
+                                <i class="fas fa-check-square" style="color: green;font-size: large"></i></span>
+                        {{ deal.tyles }}
+                    </div>
+                    {% if deal.tyles.errors %}
+                        <ul>
+                            {% for error in deal.tyles.errors %}
+                                <li class="text-danger"><strong>{{ error|escape }}</strong></li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if deal.tyles.help_text %}
+                        <small class="form-text text-muted">
+                            {{ deal.tyles.help_text|safe }}  <!-- new code here -->
+                        </small>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label class="font-weight-bold"
+                           for="{{ deal.ware_source.id_for_label }}"> {{ deal.ware_source.label }}</label>
+                    <div class="input-group">
+                            <span class="input-group-addon btn border-success" style="min-width: 50px">
+                                <i class="fas fa-check-square" style="color: green;font-size: large"></i></span>
+                        {{ deal.ware_source }}
+                    </div>
+                    {% if deal.ware_source.errors %}
+                        <ul>
+                            {% for error in deal.ware_source.errors %}
+                                <li class="text-danger"><strong>{{ error|escape }}</strong></li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if deal.ware_source.help_text %}
+                        <small class="form-text text-muted">
+                            {{ deal.ware_source.help_text|safe }}  <!-- new code here -->
+                        </small>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label class="font-weight-bold"
+                           for="{{ deal.ware_des.id_for_label }}"> {{ deal.ware_des.label }}</label>
+                    <div class="input-group">
+                            <span class="input-group-addon btn border-success" style="min-width: 50px">
+                                <i class="fas fa-check-square" style="color: green;font-size: large"></i></span>
+                        {{ deal.ware_des }}
+                    </div>
+                    {% if deal.ware_des.errors %}
+                        <ul>
+                            {% for error in deal.ware_des.errors %}
+                                <li class="text-danger"><strong>{{ error|escape }}</strong></li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if deal.ware_des.help_text %}
+                        <small class="form-text text-muted">
+                            {{ deal.ware_des.help_text|safe }}  <!-- new code here -->
+                        </small>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label class="font-weight-bold"
+                           for="{{ deal.good.id_for_label }}"> {{ deal.good.label }}</label>
+                    <div class="input-group">
+                            <span class="input-group-addon btn border-success" style="min-width: 50px">
+                                <i class="fas fa-list" style="color: green;font-size: large"></i></span>
+                        {{ deal.good }}
+                    </div>
+                    {% if deal.good.errors %}
+                        <ul>
+                            {% for error in deal.good.errors %}
+                                <li class="text-danger"><strong>{{ error|escape }}</strong></li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if deal.good.help_text %}
+                        <small class="form-text text-muted">
+                            {{ deal.good.help_text|safe }}  <!-- new code here -->
+                        </small>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label class="font-weight-bold"
+                           for="{{ deal.amount.id_for_label }}"> {{ deal.amount.label }}</label>
+                    <div class="input-group">
+                            <span class="input-group-addon btn border-success" style="min-width: 50px">
+                                <i class="fas fa-calculator" style="color: green;font-size: large"></i></span>
+                        {{ deal.amount }}
+                    </div>
+                    {% if deal.amount.errors %}
+                        <ul>
+                            {% for error in deal.amount.errors %}
+                                <li class="text-danger"><strong>{{ error|escape }}</strong></li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if deal.amount.help_text %}
+                        <small class="form-text text-muted">
+                            {{ deal.amount.help_text|safe }}  <!-- new code here -->
+                        </small>
+                    {% endif %}
+                </div>
+                <div class="form-group" style="{% if not user.is_superuser %}display: none{% endif %}">
+                    <label class="font-weight-bold" style="min-width: 200px"
+                           for="{{ deal.status.id_for_label }}"> {{ deal.status.label }}</label>
+                    {{ deal.status }}
+                    {% if deal.status.errors %}
+                        <ul>
+                            {% for error in deal.status.errors %}
+                                <li class="text-danger"><strong>{{ error|escape }}</strong></li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if deal.status.help_text %}
+                        <small class="form-text text-muted">
+                            {{ deal.status.help_text|safe }}  <!-- new code here -->
+                        </small>
+                    {% endif %}
+                </div>
+                <button class="btn btn-success" type="submit">Add deal</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

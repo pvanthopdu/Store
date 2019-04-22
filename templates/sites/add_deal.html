@@ -1,0 +1,26 @@
+{% extends 'sites/base.html' %}
+{% block title %}
+    Thêm giao dịch
+{% endblock %}
+{% block content %}
+    <div class="container" style="padding-top: 10px; padding-bottom: 30px;">
+        <div class="section">
+            <h4 class="text-center"><span class="fas fa-list-ul text-success"></span> Thêm giao dịch</h4>
+            <form method="POST">
+                {% csrf_token %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="{{ message.tags }} alert alert-danger" role="alert">
+                            {{ message|striptags }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {{ deal }}
+                <div>
+                    <button class="btn btn-success" type="submit">Add deal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
